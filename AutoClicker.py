@@ -1,13 +1,39 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+import keyboard  # Make sure to install with: pip install keyboard
+import threading
 
 root = tk.Tk()
 root.title("AutoClicker")
 root.geometry("430x460")
 root.resizable(False, False)
 
+current_hotkey = None
+clicking_enabled = False
+
 def add_spacer(parent):
     ttk.Label(parent, text="").pack(pady=2)
+
+def toggle_clicking():
+    global clicking_enabled
+    clicking_enabled = not clicking_enabled
+    print(f"Clicking {'enabled' if clicking_enabled else 'disabled'}")
+
+def set_hotkey():
+    global current_hotkey
+    new_hotkey = hotkey_input.get().strip()
+
+    if not new_hotkey:
+        messagebox.showwarning("Input Required", "Please enter a hotkey.")
+        return
+
+    try:
+        if current_hotkey:
+            keyboard.remove_hotkey(current_hotkey)
+        current_hotkey = keyboard.add_hotkey(new_hotkey, toggle_clicking)
+        print(f"Hotkey '{new_hotkey}' set. Press it to toggle clicking.")
+    except Exception as e:
+        messagebox.showerror("Invalid Hotkey", f"Could not set hotkey: {e}")
 
 # === Interval ===
 frame1 = ttk.LabelFrame(root, text="Click Interval")
@@ -17,7 +43,18 @@ for label, var in zip(["Hours", "Minutes", "Seconds", "Milliseconds"], range(4))
 hours = tk.Spinbox(frame1, from_=0, to=999, width=5); hours.grid(row=1, column=0)
 minutes = tk.Spinbox(frame1, from_=0, to=59, width=5); minutes.grid(row=1, column=1)
 seconds = tk.Spinbox(frame1, from_=0, to=59, width=5); seconds.grid(row=1, column=2)
-milliseconds = tk.Spinbox(frame1, from_=0, to=999, width=6); milliseconds.grid(row=1, column=3)
+
+def validate_milliseconds(value):
+    try:
+        val = float(value)
+        return 0 <= val <= 999
+    except ValueError:
+        return False
+
+vcmd = (root.register(validate_milliseconds), "%P")
+milliseconds = tk.Entry(frame1, validate="key", validatecommand=vcmd, width=6)
+milliseconds.insert(0, "0.0")
+milliseconds.grid(row=1, column=3)
 
 # === Repeat ===
 frame2 = ttk.LabelFrame(root, text="Repeat")
@@ -54,7 +91,17 @@ pos_y.grid(row=1, column=2, padx=2, sticky="w")
 frame5 = ttk.LabelFrame(root, text="Hotkey")
 frame5.pack(padx=10, pady=5, fill="x")
 hotkey_input = ttk.Entry(frame5, width=20)
+hotkey_input.insert(0, "e.g. F6, ctrl+alt+z")
 hotkey_input.grid(row=0, column=0, padx=5, pady=5)
-ttk.Button(frame5, text="Set Hotkey", command=lambda: print("Set hotkey")).grid(row=0, column=1, padx=5)
+ttk.Button(frame5, text="Set Hotkey", command=set_hotkey).grid(row=0, column=1, padx=5)
 
-root.mainloop()
+# === Background listener thread ===
+def run_tk():
+    root.mainloop()
+
+tk_thread = threading.Thread(target=run_tk)
+tk_thread.daemon = True
+tk_thread.start()
+
+# Prevent script from exiting
+keyboard.wait()
