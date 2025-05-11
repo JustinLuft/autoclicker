@@ -1,18 +1,15 @@
 import sys
-import json
 import time
 import threading
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout,
+    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
     QGroupBox, QRadioButton, QSpinBox, QComboBox, QGridLayout
 )
 from PyQt5.QtCore import Qt
 from pynput.mouse import Button, Controller as MouseController
-from pynput.keyboard import Controller as KeyboardController
 import keyboard as kb
 
 mouse = MouseController()
-keyboard = KeyboardController()
 clicking = False
 click_thread = None
 
@@ -21,31 +18,32 @@ class AutoClicker(QWidget):
         super().__init__()
         self.setWindowTitle("Advanced Auto Clicker")
         self.setFixedSize(500, 400)
+        self.setup_ui()
 
+    def setup_ui(self):
         self.create_interval_box()
         self.create_repeat_box()
         self.create_click_options()
         self.create_position_box()
         self.create_control_buttons()
 
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.interval_group)
-        main_layout.addWidget(self.repeat_group)
-        main_layout.addWidget(self.options_group)
-        main_layout.addWidget(self.position_group)
-        main_layout.addLayout(self.control_layout)
-
-        self.setLayout(main_layout)
+        layout = QVBoxLayout()
+        layout.addWidget(self.interval_group)
+        layout.addWidget(self.repeat_group)
+        layout.addWidget(self.options_group)
+        layout.addWidget(self.position_group)
+        layout.addLayout(self.control_layout)
+        self.setLayout(layout)
 
     def create_interval_box(self):
         self.interval_group = QGroupBox("Click Interval")
         layout = QGridLayout()
         self.hours = QSpinBox(); self.minutes = QSpinBox()
         self.seconds = QSpinBox(); self.milliseconds = QSpinBox()
-        layout.addWidget(QLabel("hours"), 0, 1)
-        layout.addWidget(QLabel("minutes"), 0, 2)
-        layout.addWidget(QLabel("seconds"), 0, 3)
-        layout.addWidget(QLabel("milliseconds"), 0, 4)
+        layout.addWidget(QLabel("Hours"), 0, 1)
+        layout.addWidget(QLabel("Minutes"), 0, 2)
+        layout.addWidget(QLabel("Seconds"), 0, 3)
+        layout.addWidget(QLabel("Milliseconds"), 0, 4)
         layout.addWidget(self.hours, 1, 1)
         layout.addWidget(self.minutes, 1, 2)
         layout.addWidget(self.seconds, 1, 3)
@@ -55,13 +53,13 @@ class AutoClicker(QWidget):
     def create_repeat_box(self):
         self.repeat_group = QGroupBox("Click Repeat")
         layout = QHBoxLayout()
-        self.infinite_repeat = QRadioButton("Infinite (Until stopped)")
+        self.infinite_repeat = QRadioButton("Infinite")
         self.infinite_repeat.setChecked(True)
         self.repeat_times = QSpinBox()
         layout.addWidget(self.infinite_repeat)
         layout.addWidget(QLabel("or"))
         layout.addWidget(self.repeat_times)
-        layout.addWidget(QLabel("Times"))
+        layout.addWidget(QLabel("times"))
         self.repeat_group.setLayout(layout)
 
     def create_click_options(self):
@@ -82,14 +80,12 @@ class AutoClicker(QWidget):
         layout = QGridLayout()
         self.use_current = QRadioButton("Current Cursor Position")
         self.use_current.setChecked(True)
-        self.use_custom = QRadioButton("X/Y:")
+        self.use_custom = QRadioButton("Set Position (X/Y):")
         self.x_input = QSpinBox(); self.y_input = QSpinBox()
-        self.pick_btn = QPushButton("Pick Location")
         layout.addWidget(self.use_current, 0, 0, 1, 2)
         layout.addWidget(self.use_custom, 1, 0)
         layout.addWidget(self.x_input, 1, 1)
         layout.addWidget(self.y_input, 1, 2)
-        layout.addWidget(self.pick_btn, 1, 3)
         self.position_group.setLayout(layout)
 
     def create_control_buttons(self):
