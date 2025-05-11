@@ -25,6 +25,9 @@ jobs:
         run: |
           pyinstaller --onefile --noconsole AutoClicker_GUI.py
 
+      - name: List build output (for debug)
+        run: dir dist
+
       - name: Upload built EXE
         uses: actions/upload-artifact@v3
         with:
