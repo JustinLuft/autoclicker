@@ -19,17 +19,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyinstaller pynput keyboard
+          pip install pyinstaller PyQt5 pynput keyboard
 
       - name: Build EXE
         run: |
-          pyinstaller --onefile --noconsole AutoClicker_GUI.py
+          pyinstaller --onefile --noconsole AutoClicker_PyQt.py
 
-      - name: List build output (debug)
+      - name: List output (debug)
         run: dir dist
 
-      - name: Upload built EXE
+      - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AutoClicker_EXE
-          path: dist/AutoClicker_GUI.exe
+          name: AutoClicker_PyQt_EXE
+          path: dist/AutoClicker_PyQt.exe
