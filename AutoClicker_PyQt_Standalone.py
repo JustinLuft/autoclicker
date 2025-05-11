@@ -3,10 +3,10 @@ import time
 import threading
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-    QGroupBox, QRadioButton, QSpinBox, QComboBox, QGridLayout, QLineEdit, QDoubleSpinBox
+    QGroupBox, QRadioButton, QSpinBox, QComboBox, QGridLayout, QLineEdit,
+    QDoubleSpinBox, QMessageBox
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPalette, QColor
 from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController, Key
 import keyboard as kb
@@ -15,6 +15,7 @@ mouse = MouseController()
 keyboard = KeyboardController()
 clicking = False
 click_thread = None
+hotkey_registered = False
 
 class CustomStepSpinBox(QDoubleSpinBox):
     def stepBy(self, steps):
@@ -31,7 +32,7 @@ class CustomStepSpinBox(QDoubleSpinBox):
 class AutoClicker(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Custom Toggle Auto Clicker (Dark Mode)")
+        self.setWindowTitle("Auto Clicker")
         self.setFixedSize(520, 460)
         self.setup_ui()
 
@@ -180,30 +181,21 @@ class AutoClicker(QWidget):
             self.start_clicking()
 
     def set_toggle_hotkey(self):
+        global hotkey_registered
         key_combo = self.hotkey_input.text().strip()
-        if key_combo:
-            kb.clear_all_hotkeys()
+        if not key_combo:
+            QMessageBox.warning(self, "Invalid Hotkey", "Please enter a valid hotkey.")
+            return
+        try:
+            if hotkey_registered:
+                kb.remove_all_hotkeys()
             kb.add_hotkey(key_combo, self.toggle_clicking)
-
-def set_dark_palette(app):
-    dark_palette = QPalette()
-    dark_palette.setColor(QPalette.Window, QColor(30, 30, 30))
-    dark_palette.setColor(QPalette.WindowText, Qt.white)
-    dark_palette.setColor(QPalette.Base, QColor(45, 45, 45))
-    dark_palette.setColor(QPalette.AlternateBase, QColor(60, 60, 60))
-    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    dark_palette.setColor(QPalette.Text, Qt.white)
-    dark_palette.setColor(QPalette.Button, QColor(45, 45, 45))
-    dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    dark_palette.setColor(QPalette.BrightText, Qt.red)
-    dark_palette.setColor(QPalette.Highlight, QColor(100, 100, 255))
-    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-    app.setPalette(dark_palette)
+            hotkey_registered = True
+        except Exception as e:
+            QMessageBox.critical(self, "Hotkey Error", f"Could not set hotkey: {str(e)}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    set_dark_palette(app)
     window = AutoClicker()
     window.show()
     sys.exit(app.exec_())
