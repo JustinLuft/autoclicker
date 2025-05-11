@@ -21,12 +21,18 @@ jobs:
         run: |
           pip install pyinstaller PyQt5 pynput keyboard
 
+      - name: Show files before build
+        run: dir
+
       - name: Build EXE with Icon
         run: |
-          pyinstaller --onefile --noconsole --icon=hamster_icon.ico AutoClicker_PyQt_Standalone.py
+          pyinstaller --onefile --noconsole --icon=hamster_icon.ico AutoClicker.py
+
+      - name: Show dist contents
+        run: dir dist
 
       - name: Upload EXE Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AutoClicker_PyQt_Executable
-          path: dist/AutoClicker_PyQt_Standalone.exe
+          name: AutoClicker_Executable
+          path: dist/AutoClicker.exe
