@@ -1,4 +1,4 @@
-name: Build PyQt5 EXE with Icon
+name: Build Tkinter EXE with Icon
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyinstaller PyQt5 pynput keyboard
+          pip install pyinstaller pynput keyboard
 
       - name: Show files before build
         run: dir
