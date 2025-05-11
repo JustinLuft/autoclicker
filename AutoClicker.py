@@ -25,7 +25,7 @@ for label, var in zip(["Hours", "Minutes", "Seconds", "Milliseconds"], range(4))
 hours = tk.Spinbox(frame1, from_=0, to=999, width=5); hours.grid(row=1, column=0)
 minutes = tk.Spinbox(frame1, from_=0, to=59, width=5); minutes.grid(row=1, column=1)
 seconds = tk.Spinbox(frame1, from_=0, to=59, width=5); seconds.grid(row=1, column=2)
-milliseconds = tk.Spinbox(frame1, from_=0, to=59, width=5); seconds.grid(row=1, column=3)
+milliseconds = tk.Spinbox(frame1, from_=0, to=59, width=5); milliseconds.grid(row=1, column=3)
 
 
 # === REPEAT UI ===
@@ -139,9 +139,5 @@ def toggle_clicking():
         stop_clicking()
     else:
         start_clicking()
-
-# === TOGGLE BUTTON ===
-toggle_btn = ttk.Button(root, text="Toggle Clicking", command=toggle_clicking)
-toggle_btn.pack(pady=20)
 
 root.mainloop()
