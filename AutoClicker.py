@@ -3,7 +3,7 @@ from tkinter import ttk
 
 root = tk.Tk()
 root.title("AutoClicker")
-root.geometry("430x480")
+root.geometry("430x460")
 root.resizable(False, False)
 
 def add_spacer(parent):
@@ -17,9 +17,7 @@ for label, var in zip(["Hours", "Minutes", "Seconds", "Milliseconds"], range(4))
 hours = tk.Spinbox(frame1, from_=0, to=999, width=5); hours.grid(row=1, column=0)
 minutes = tk.Spinbox(frame1, from_=0, to=59, width=5); minutes.grid(row=1, column=1)
 seconds = tk.Spinbox(frame1, from_=0, to=59, width=5); seconds.grid(row=1, column=2)
-milliseconds = tk.Scale(frame1, from_=0, to=1000, orient="horizontal", length=120)
-milliseconds.set(1)
-milliseconds.grid(row=1, column=3, padx=5)
+milliseconds = tk.Spinbox(frame1, from_=0, to=999, width=6); milliseconds.grid(row=1, column=3)
 
 # === Repeat ===
 frame2 = ttk.LabelFrame(root, text="Repeat")
@@ -58,9 +56,5 @@ frame5.pack(padx=10, pady=5, fill="x")
 hotkey_input = ttk.Entry(frame5, width=20)
 hotkey_input.grid(row=0, column=0, padx=5, pady=5)
 ttk.Button(frame5, text="Set Hotkey", command=lambda: print("Set hotkey")).grid(row=0, column=1, padx=5)
-
-# === Toggle Button ===
-toggle_btn = ttk.Button(root, text="Toggle Clicking", command=lambda: print("Toggled"))
-toggle_btn.pack(pady=20)
 
 root.mainloop()
