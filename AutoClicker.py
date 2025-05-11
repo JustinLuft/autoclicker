@@ -14,7 +14,7 @@ hotkey_registered = False
 
 root = tk.Tk()
 root.title("AutoClicker")
-root.geometry("430x480")
+root.geometry("430x400")
 root.resizable(False, False)
 
 # === INTERVAL UI ===
