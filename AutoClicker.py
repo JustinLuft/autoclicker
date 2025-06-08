@@ -28,7 +28,7 @@ seconds = tk.Spinbox(frame1, from_=0, to=59, width=5); seconds.grid(row=1, colum
 milliseconds = tk.Spinbox(frame1, from_=0, to=59, width=5); milliseconds.grid(row=1, column=3)
 
 
-# === REPEAT UI ===
+# === REPEAT UI ==
 frame2 = ttk.LabelFrame(root, text="Repeat")
 frame2.pack(padx=10, pady=5, fill="x")
 repeat_type = tk.StringVar(value="infinite")
